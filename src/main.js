@@ -15,7 +15,31 @@ const { log } = Apify.utils;
 /** Main function */
 Apify.main(async () => {
     // Actor INPUT variable
-    const input = await Apify.getValue('INPUT');
+    //const input = await Apify.getValue('INPUT');
+    const input = {
+        "destType": "city",
+        "startUrls": [
+          {
+            "requestsFromUrl": "https://apify-uploads-prod.s3.amazonaws.com/XdfM4dc5ZznG3vHpf-Test-Nouvel_ActeurBookingWithID_-_ID-clean-url.tsv"
+          }
+        ],
+        "sortBy": "price",
+        "checkIn": "2020-10-10",
+        "checkOut": "2020-10-15",
+        "rooms": 2,
+        "currency": "USD",
+        "language": "fr",
+        "minMaxPrice": "none",
+        "propertyType": "none",
+        "proxyConfig": {
+          "useApifyProxy": true
+        },
+        "simple": false,
+        "useFilters": false,
+        "testProxy": false,
+        "adults": 2,
+        "children": 0
+      };
 
     // Actor STATE variable
     const state = await Apify.getValue('STATE') || { crawled: {} };
@@ -112,6 +136,8 @@ Apify.main(async () => {
         startUrl = addUrlParameters('https://www.booking.com/searchresults.html?dest_type=city&ss=paris&order=bayesian_review_score', input);
         await requestList.initialize();
     } else {
+    return;
+    }/*
         // Create startURL based on provided INPUT.
         const dType = input.destType || 'city';
         const query = encodeURIComponent(input.search);
@@ -130,7 +156,7 @@ Apify.main(async () => {
                 });
             }
         }
-    }
+    }*/
 
     const proxyConfiguration = await Apify.createProxyConfiguration({
         ...input.proxyConfig,
@@ -138,7 +164,7 @@ Apify.main(async () => {
 
     const crawler = new Apify.PuppeteerCrawler({
         requestList,
-        requestQueue,
+        //requestQueue,
         handlePageTimeoutSecs: 120,
         proxyConfiguration,
         launchPuppeteerOptions: {
