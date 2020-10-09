@@ -15,8 +15,8 @@ const { log } = Apify.utils;
 /** Main function */
 Apify.main(async () => {
     // Actor INPUT variable
-    //const input = await Apify.getValue('INPUT');
-    const input = {
+    const input = await Apify.getValue('INPUT');
+   /* const input = {
         "destType": "city",
         "startUrls": [
           {
@@ -39,7 +39,7 @@ Apify.main(async () => {
         "testProxy": false,
         "adults": 2,
         "children": 0
-      };
+      };*/
 
     // Actor STATE variable
     const state = await Apify.getValue('STATE') || { crawled: {} };
