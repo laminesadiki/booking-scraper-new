@@ -168,6 +168,7 @@ Apify.main(async () => {
         handlePageTimeoutSecs: 120,
         proxyConfiguration,
         launchPuppeteerOptions: {
+            headleass : false,
             ignoreHTTPSErrors: true,
             useChrome: Apify.isAtHome(),
             args: [
