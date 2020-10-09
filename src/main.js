@@ -202,22 +202,22 @@ Apify.main(async () => {
             log.info(`open url(${request.userData.label}): ${await page.url()}`);
 
             // Check if startUrl was open correctly
-            if (input.startUrls) {
+          /*  if (input.startUrls) {
                 const pageUrl = await page.url();
                 if (pageUrl.length < request.url.length) {
                     await retireBrowser(puppeteerPool, page, requestQueue, request);
                     return;
                 }
-            }
+            }*/
 
             // Check if page was loaded with correct currency.
             const curInput = await page.$('input[name="selected_currency"]');
             const currency = await getAttribute(curInput, 'value');
 
-            if (!currency || currency !== input.currency) {
+           /* if (!currency || currency !== input.currency) {
                 await retireBrowser(puppeteerPool, page, requestQueue, request);
                 throw new Error(`Wrong currency: ${currency}, re-enqueuing...`);
-            }
+            } */
 
             if (request.userData.label === 'detail') { // Extract data from the hotel detail page
                 // wait for necessary elements
@@ -229,10 +229,10 @@ Apify.main(async () => {
 
                 // Check if the page was open through working proxy.
                 const pageUrl = await page.url();
-                if (!input.startUrls && pageUrl.indexOf('label') < 0) {
+             /*   if (!input.startUrls && pageUrl.indexOf('label') < 0) {
                     await retireBrowser(puppeteerPool, page, requestQueue, request);
                     return;
-                }
+                } */
                 // Exit if core data is not present or the rating is too low.
                 if (!ld || (ld.aggregateRating && ld.aggregateRating.ratingValue <= (input.minScore || 0))) {
                     return;
@@ -268,35 +268,35 @@ Apify.main(async () => {
 
                 // Check if the page was open through working proxy.
                 const pageUrl = await page.url();
-                if (!input.startUrls && pageUrl.indexOf(sortBy) < 0) {
+             /*   if (!input.startUrls && pageUrl.indexOf(sortBy) < 0) {
                     await retireBrowser(puppeteerPool, page, requestQueue, request);
                     return;
-                }
+                } */
 
                 // If it's aprropriate, enqueue all pagination pages
-                if (enqueuingReady && (!input.maxPages || input.minMaxPrice !== 'none' || input.propertyType !== 'none')) {
+              /*  if (enqueuingReady && (!input.maxPages || input.minMaxPrice !== 'none' || input.propertyType !== 'none')) {
                     enqueueAllPages(page, requestQueue, input);
-                }
+                }*/
 
                 // If property type is enabled, enqueue necessary page.
-                if (settingPropertyType) {
+              /*  if (settingPropertyType) {
                     await setPropertyType(page, input, requestQueue);
-                }
+                } */
 
                 // If min-max price is enabled, enqueue necessary page.
-                if (settingMinMaxPrice && !settingPropertyType) {
+             /*   if (settingMinMaxPrice && !settingPropertyType) {
                     await setMinMaxPrice(page, input, requestQueue);
-                }
+                } */
 
                 // If filtering is enabled, enqueue necessary pages.
-                if (input.useFilters && !filtered) {
+               /* if (input.useFilters && !filtered) {
                     log.info('enqueuing filtered pages...');
 
                     await enqueueLinks(page, requestQueue, '.filterelement', null, 'page', fixUrl('&', input), async (link) => {
                         const lText = await getAttribute(link, 'textContent');
                         return `${lText}_0`;
                     });
-                }
+                }*/
 
                 const items = await page.$$('.sr_property_block.sr_item:not(.soldout_property)');
                 if (items.length === 0) {
@@ -333,7 +333,7 @@ Apify.main(async () => {
                     const firstItem = parseInt(pageRange && pageRange[0] ? pageRange[0] : '1', 10);
                     const links = await page.$$('.sr_property_block.sr_item:not(.soldout_property) .hotel_name_link');
 
-                    for (let iLink = 0; iLink < links.length; iLink++) {
+                   /* for (let iLink = 0; iLink < links.length; iLink++) {
                         const link = links[iLink];
                         const href = await getAttribute(link, 'href');
 
@@ -350,7 +350,7 @@ Apify.main(async () => {
                                 uniqueKey: uniqueKeyCal,
                             }, { forefront: true });
                         }
-                    }
+                    } */
                 }
             }
         },
