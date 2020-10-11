@@ -73,7 +73,7 @@ Apify.main(async () => {
     } else if (daysInterval > 0) {
         log.info(`Using check-in / check-out with an interval of ${daysInterval} days`);
     }
-
+/*
     let extendOutputFunction;
     if (typeof input.extendOutputFunction === 'string' && input.extendOutputFunction.trim() !== '') {
         try {
@@ -86,7 +86,7 @@ Apify.main(async () => {
             throw new Error('extendOutputFunction is not a function! Please fix it or use just default ouput!');
         }
     }
-
+*/
     if (input.minScore) { input.minScore = parseFloat(input.minScore); }
     const sortBy = input.sortBy || 'bayesian_review_score';
     const requestQueue = await Apify.openRequestQueue();
@@ -137,7 +137,8 @@ Apify.main(async () => {
         await requestList.initialize();
     } else {
     return;
-    }/*
+    }
+    /*
         // Create startURL based on provided INPUT.
         const dType = input.destType || 'city';
         const query = encodeURIComponent(input.search);
@@ -155,8 +156,7 @@ Apify.main(async () => {
                     userData: { label: 'page' },
                 });
             }
-        }
-    }*/
+        }*/
 
     const proxyConfiguration = await Apify.createProxyConfiguration({
         ...input.proxyConfig,
@@ -164,7 +164,7 @@ Apify.main(async () => {
 
     const crawler = new Apify.PuppeteerCrawler({
         requestList,
-        //requestQueue,
+        requestQueue,
         handlePageTimeoutSecs: 120,
         proxyConfiguration,
         launchPuppeteerOptions: {
@@ -203,22 +203,22 @@ Apify.main(async () => {
             log.info(`open url(${request.userData.label}): ${await page.url()}`);
 
             // Check if startUrl was open correctly
-          /*  if (input.startUrls) {
+            if (input.startUrls) {
                 const pageUrl = await page.url();
                 if (pageUrl.length < request.url.length) {
                     await retireBrowser(puppeteerPool, page, requestQueue, request);
                     return;
                 }
-            }*/
+            }
 
             // Check if page was loaded with correct currency.
             const curInput = await page.$('input[name="selected_currency"]');
             const currency = await getAttribute(curInput, 'value');
 
-           /* if (!currency || currency !== input.currency) {
+            if (!currency || currency !== input.currency) {
                 await retireBrowser(puppeteerPool, page, requestQueue, request);
                 throw new Error(`Wrong currency: ${currency}, re-enqueuing...`);
-            } */
+            } 
 
             if (request.userData.label === 'detail') { // Extract data from the hotel detail page
                 // wait for necessary elements
@@ -230,10 +230,10 @@ Apify.main(async () => {
 
                 // Check if the page was open through working proxy.
                 const pageUrl = await page.url();
-             /*   if (!input.startUrls && pageUrl.indexOf('label') < 0) {
+                if (!input.startUrls && pageUrl.indexOf('label') < 0) {
                     await retireBrowser(puppeteerPool, page, requestQueue, request);
                     return;
-                } */
+                } 
                 // Exit if core data is not present or the rating is too low.
                 if (!ld || (ld.aggregateRating && ld.aggregateRating.ratingValue <= (input.minScore || 0))) {
                     return;
@@ -245,7 +245,7 @@ Apify.main(async () => {
                 log.info('detail extracted');
                 let userResult = {};
 
-                if (extendOutputFunction) {
+/*               if (extendOutputFunction) {
                     userResult = await page.evaluate(async (functionStr) => {
                         // eslint-disable-next-line no-eval
                         const f = eval(functionStr);
@@ -257,9 +257,12 @@ Apify.main(async () => {
                         process.exit(1);
                     }
                 }
-
+*/
                 await Apify.pushData({ ...detail, ...userResult });
-            } else {
+            }
+            else {return;} 
+            /*
+            else {
                 // Handle hotel list page.
                 const filtered = await isFiltered(page);
                 const settingFilters = input.useFilters && !filtered;
@@ -297,7 +300,7 @@ Apify.main(async () => {
                         const lText = await getAttribute(link, 'textContent');
                         return `${lText}_0`;
                     });
-                }*/
+                }
 
                 const items = await page.$$('.sr_property_block.sr_item:not(.soldout_property)');
                 if (items.length === 0) {
@@ -351,9 +354,9 @@ Apify.main(async () => {
                                 uniqueKey: uniqueKeyCal,
                             }, { forefront: true });
                         }
-                    } */
+                    } 
                 }
-            }
+            } */
         },
 
         handleFailedRequestFunction: async ({ request }) => {
